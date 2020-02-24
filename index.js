@@ -58,7 +58,7 @@ app.use(express.static(assetsPath));
 app.use(upload());
 // view engine
 app.engine("ejs", consolidate.ejs);
-app.set("views", "views");
+app.set("views", "./views");
 app.set("view engine", "ejs");
 
 // facebook
@@ -314,7 +314,7 @@ app.get("/DashBoard", (req, res) => {
     const teamPlayers = req.session.curruser.Team_Members.map(use => {
       return use;
     });
-    return res.status(201).render("DashBoards", {
+    return res.status(201).render("Dashboards", {
       data: req.user,
       username: req.session.curruser.Team_name,
       user_members: teamPlayers,
