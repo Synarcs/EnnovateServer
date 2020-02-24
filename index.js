@@ -58,7 +58,7 @@ app.use(express.static(assetsPath));
 app.use(upload());
 // view engine
 app.engine("ejs", consolidate.ejs);
-app.set("views", "./views");
+app.set("views", "views");
 app.set("view engine", "ejs");
 
 // facebook
