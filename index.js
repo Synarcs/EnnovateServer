@@ -111,7 +111,6 @@ app.get("/auth/github/callback", (req, res, next) => {
         return next(err);
       }
       req.session.user = req.user;
-
       res.redirect("/Home");
     });
   })(req, res, next);
@@ -144,16 +143,27 @@ app.get("/auth/google/callback", (req, res, next) => {
 
 app.get("/Home", (req, res) => {
   if (req.user) {
-    if (req.user.displayName == null) {
-      // for github
-      res.render("Home", { name: req.user.username, user: req.user });
-    } else {
-      res.render("Home", { name: req.user.displayName, user: req.user });
+    switch (req.user.provider) {
+      case "google":
+        return res.render("Home", { name: req.user.username, user: req.user });
+      case "facebook":
+        return res.render("Home", {
+          name: req.user.displayName,
+          user: req.user
+        });
+      default:
+        return res.render("Home", { name: req.user.username, user: req.user });
     }
-    if (req.user.displayName == null || req.user.profile === "google") {
-      console.log(req.user);
-      res.render("Home", { name: req.user.username, user: req.user });
-    }
+    // if (req.user.pr == null) {
+    //   // for github
+    //   return res.render("Home", { name: req.user.username, user: req.user });
+    // } else {
+    //   res.render("Home", { name: req.user.displayName, user: req.user });
+    // }
+    // if (req.user.displayName == null || req.user.profile === "google") {
+    //   console.log(req.user);
+    //
+    // }
   } else {
     res.redirect("/Login");
   }
