@@ -54,6 +54,7 @@ app.use(
 app.use(cookieParser("Ennovate"));
 app.use(passport.initialize());
 app.use(passport.session());
+// template engine
 app.use(express.static(assetsPath));
 app.use(upload());
 // view engine
@@ -67,7 +68,7 @@ app.get("/auth/facebook", (req, res, next) => {
 });
 
 app.get("/", (req, res) => {
-  res.render("Welcome", { msg: "welcome user" });
+  res.render("Ennovate", { msg: "welcome user" });
 });
 
 app.get("/auth/facebook/callback", (req, res, next) => {
