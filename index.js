@@ -4,7 +4,11 @@ const path = require("path");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const upload = require("express-fileupload");
-const storage = require("firebase/storage");
+const url = require("url");
+const events = require("events");
+
+// cloud bucet
+const gcloud = require("gcloud");
 
 // template engine
 // passport
@@ -342,37 +346,13 @@ app.post("/upload", function(req, res) {
   let file;
   if (!req.files) {
     return res.status(201).render("Dashboards", { err: "file not found" });
-  }
-  file = req.files.FormFieldName;
-  // here is the field name of the form
-  const upload = firebase
-    .storage()
-    .ref(`${req.session.curruser.Team_name}/userData`)
-    .put(file);
-  // progress,error,complete
-  upload.on(
-    "state_changed",
-    snapshot => {
-      const progress =
-        // Math.floor(snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        console.length(snapshot.totalBytes);
-    },
-    error => {
-      console.log(error);
-    },
-    () => {
-      firebaseStorage
-        .ref(req.session.curruser.Team_name)
-        .child()
-        .getDownloadURL()
-        .then(urls => {
-          console.log(urls);
-          res.render("Dashboards", {
-            msg: "the file is successfully uploaded"
-          });
-        });
+  } else {
+    if (req.session.curruser) {
+      file = req.files;
+      // res.json({ user: req.session.curruser, file });
     }
-  );
+  }
+  // );
 });
 
 app.get("/*", (req, res) => {
