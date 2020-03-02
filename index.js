@@ -173,7 +173,7 @@ app.get("/Home", (req, res) => {
                     const {
                       arr: { member1, member2, member3, member4, member5 }
                     } = val;
-                    let user;
+                    console.log(arr);
                     if (member3 != "") {
                       user = member3;
                     }
