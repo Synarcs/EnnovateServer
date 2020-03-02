@@ -294,6 +294,7 @@ app.post("/Register", function(req, res) {
           })
           .then(addStatus => {
             console.log("user is added and a email is been send" + addStatus);
+
             // send email now
             const mailgun = require("mailgun-js");
             // configure mailgun first
@@ -310,6 +311,19 @@ app.post("/Register", function(req, res) {
               cnumber,
               main_email
             });
+
+            // sms message
+            const Nexmo = require("nexmo");
+            const nexmo = new Nexmo({
+              apiKey: "2122d811",
+              apiSecret: "COEacBTaAF254pZm"
+            });
+
+            const from = "BloomBoxKjsce Team";
+            const to = "91" + cnumber;
+            const text = "Hello here your Team secret 😊😊😊" + random;
+
+            nexmo.message.sendSms(from, to, text);
             res.redirect("/Login");
           })
           .catch(err => {
