@@ -356,7 +356,7 @@ app.post("/upload", function(req, res) {
   // );
 });
 
-app.post("/updateUser", (req, res) => {
+app.post("/Home", (req, res) => {
   if (req.user.provider == "github") {
     const {
       college_name,
