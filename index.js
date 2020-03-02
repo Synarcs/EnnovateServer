@@ -7,9 +7,6 @@ const upload = require("express-fileupload");
 const url = require("url");
 const events = require("events");
 
-// cloud bucet
-const gcloud = require("gcloud");
-
 // template engine
 // passport
 const passport = require("passport");
@@ -157,7 +154,11 @@ app.get("/Home", (req, res) => {
           user: req.user
         });
       default:
-        return res.render("Home", { name: req.user.username, user: req.user });
+        return res.render("Home", {
+          name: req.user.username,
+          user: req.user,
+          presennt: true
+        });
     }
     // if (req.user.pr == null) {
     //   // for github
@@ -221,7 +222,7 @@ app.post("/Register", function(req, res) {
     charset: "alphabetic"
   });
 
-  console.log(players_Names);
+  // console.log(players_Names);
   const users = players_Names.split(" ");
   //   only ma to 60 registrations
   const data = {
@@ -353,6 +354,69 @@ app.post("/upload", function(req, res) {
     }
   }
   // );
+});
+
+app.post("/updateUser", (req, res) => {
+  if (req.user.provider == "github") {
+    const {
+      college_name,
+      phone_no,
+      alternate_phone_no,
+      team_members,
+      Team_name
+    } = req.body;
+    firebase
+      .firestore()
+      .doc(`/admin/${Team_name}`)
+      .get()
+      .then(user => {
+        if (user.exists) {
+          return res.status(401).json({
+            msg: "Team is already registered"
+          });
+        }
+        const random = randomstring.generate({
+          length: 15,
+          charset: "alphabetic"
+        });
+        // update the admin first
+        firebase
+          .firestore()
+          .doc(`/admin/${Team_name}`)
+          .set({
+            teamSecret: random,
+            method: req.user.provider
+          })
+          .then(final => {
+            firebase
+              .firestore()
+              .doc(`/github/${req.user.username}`)
+              .update({
+                college_name,
+                phone_no,
+                alternate_phone_no,
+                Team_name
+                // team_members
+              })
+              .then(success => {
+                return res.render("Home", {
+                  name: req.user.displayName,
+                  TeamName: Team_name,
+                  presennt: false
+                  // dashboard goes here
+                  // users go here
+                });
+              });
+          });
+      });
+  }
+});
+
+// only for user with oauth
+app.post("/addMember", (req, res) => {
+  const { team_code } = req.body;
+  if (req.body) {
+  }
 });
 
 app.get("/*", (req, res) => {
