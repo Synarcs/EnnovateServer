@@ -134,13 +134,12 @@ const addGoogleUse = ({ id, displayName, name, provider }) => {
   //
   firebase
     .firestore()
-    .doc(`/${provider}/${username}`)
+    .doc(`/${provider}/${displayName}`)
     .set({
       id,
       Team_Leader: displayName,
       provider,
       details: name,
-      image: profileUrl,
       redirect_page: false
     })
     .then(msg => {
@@ -152,12 +151,11 @@ const addGoogleUse = ({ id, displayName, name, provider }) => {
   // data
   firebase
     .firestore()
-    .doc(`/Ennovate2k20/${username}`)
+    .doc(`/Ennovate2k20/${displayName}`)
     .update({
       id,
-      Team_Leader: username,
+      Team_Leader: displayName,
       provider,
-      image: profileUrl,
       redirect_page: false
     })
     .then(msg => {

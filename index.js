@@ -130,13 +130,20 @@ app.get("/Home", (req, res) => {
               if (Object.keys(data.data()).length > 5) {
                 // user created a team
                 // to display his team
+                firebase
+                  .firestore()
+                  .doc(`/Ennovate2k20/${req.user.username}`)
+                  .get()
+                  .then(data => {
+                    console.log(data.data());
+                  });
                 return res.render("DisplayUsers", {
-                  name: req.user.username,
+                  name: req.user.displayName,
                   user: req.user
                 });
               } else {
                 return res.render("Home", {
-                  name: req.user.username,
+                  name: req.user.displayName,
                   user: req.user,
                   presennt: true
                 });
@@ -158,10 +165,23 @@ app.get("/Home", (req, res) => {
             if (data.exists) {
               if (Object.keys(data.data()).length > 5) {
                 // user created a team
-                return res.render("DisplayUsers", {
-                  name: req.user.username,
-                  user: req.user
-                });
+                firebase
+                  .firestore()
+                  .doc(`/Ennovate2k20/${req.user.username}`)
+                  .get()
+                  .then(val => {
+                    const {
+                      arr: { member1, member2, member3, member4, member5 }
+                    } = val;
+                    let user;
+                    if (member3 != "") {
+                      user = member3;
+                    }
+                    return res.render("DisplayUsers", {
+                      name: req.user.username,
+                      user: req.user
+                    });
+                  });
               } else {
                 return res.render("Home", {
                   name: req.user.username,
