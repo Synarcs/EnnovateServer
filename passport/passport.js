@@ -71,7 +71,25 @@ const addGithubUser = ({ id, username, profileUrl, provider }) => {
       id,
       Team_Leader: username,
       provider,
-      image: profileUrl
+      image: profileUrl,
+      redirect_page: false
+    })
+    .then(msg => {
+      console.log("user is added to github");
+    })
+    .catch(err => {
+      console.log(err);
+    });
+  // data
+  firebase
+    .firestore()
+    .doc(`/Ennovate2k20/${username}`)
+    .update({
+      id,
+      Team_Leader: username,
+      provider,
+      image: profileUrl,
+      redirect_page: false
     })
     .then(msg => {
       console.log("user is added to github");
@@ -98,14 +116,49 @@ passport.use(
 );
 
 const addGoogleUse = ({ id, displayName, name, provider }) => {
+  // firebase
+  // .firestore()
+  // .doc(`/${provider}/${displayName}`)
+  // .set({
+  //   id,
+  //   Team_Leader: displayName,
+  //   details: name,
+  //   provider
+  // })
+  // .then(msg => {
+  //   console.log("user is added to github");
+  // })
+  // .catch(err => {
+  //   console.log(err);
+  // });
+  //
   firebase
     .firestore()
-    .doc(`/${provider}/${displayName}`)
+    .doc(`/${provider}/${username}`)
     .set({
       id,
       Team_Leader: displayName,
+      provider,
       details: name,
-      provider
+      image: profileUrl,
+      redirect_page: false
+    })
+    .then(msg => {
+      console.log("user is added to github");
+    })
+    .catch(err => {
+      console.log(err);
+    });
+  // data
+  firebase
+    .firestore()
+    .doc(`/Ennovate2k20/${username}`)
+    .update({
+      id,
+      Team_Leader: username,
+      provider,
+      image: profileUrl,
+      redirect_page: false
     })
     .then(msg => {
       console.log("user is added to github");

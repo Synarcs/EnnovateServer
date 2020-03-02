@@ -63,34 +63,8 @@ app.engine("ejs", consolidate.ejs);
 app.set("views", "./views");
 app.set("view engine", "ejs");
 
-// facebook
-app.get("/auth/facebook", (req, res, next) => {
-  passport.authenticate("facebook")(req, res, next);
-});
-
 app.get("/", (req, res) => {
   res.render("Ennovate", { msg: "welcome user" });
-});
-
-app.get("/auth/facebook/callback", (req, res, next) => {
-  passport.authenticate("facebook", (err, user, info) => {
-    if (err) {
-      // call middleware parsing error
-      return next(err);
-    }
-    if (!user) {
-      // no user is received from the tokem
-      return res.redirect("/login");
-    }
-    req.logIn(user, function(err) {
-      if (err) {
-        return next(err);
-      }
-      req.session.user = req.user;
-
-      res.redirect("/Home");
-    });
-  })(req, res, next);
 });
 
 // github
@@ -147,29 +121,63 @@ app.get("/Home", (req, res) => {
   if (req.user) {
     switch (req.user.provider) {
       case "google":
-        return res.render("Home", { name: req.user.username, user: req.user });
-      case "facebook":
-        return res.render("Home", {
-          name: req.user.displayName,
-          user: req.user
-        });
+        firebase
+          .firestore()
+          .doc(`/Ennovate2k20/${req.user.username}`)
+          .get()
+          .then(data => {
+            if (data.exists) {
+              if (Object.keys(data.data()).length > 5) {
+                // user created a team
+                // to display his team
+                return res.render("DisplayUsers", {
+                  name: req.user.username,
+                  user: req.user
+                });
+              } else {
+                return res.render("Home", {
+                  name: req.user.username,
+                  user: req.user,
+                  presennt: true
+                });
+              }
+            } else {
+              return res.render("Home", {
+                name: req.user.username,
+                user: req.user,
+                presennt: true
+              });
+            }
+          });
       default:
-        return res.render("Home", {
-          name: req.user.username,
-          user: req.user,
-          presennt: true
-        });
+        firebase
+          .firestore()
+          .doc(`/Ennovate2k20/${req.user.username}`)
+          .get()
+          .then(data => {
+            if (data.exists) {
+              if (Object.keys(data.data()).length > 5) {
+                // user created a team
+                return res.render("DisplayUsers", {
+                  name: req.user.username,
+                  user: req.user
+                });
+              } else {
+                return res.render("Home", {
+                  name: req.user.username,
+                  user: req.user,
+                  presennt: true
+                });
+              }
+            } else {
+              return res.render("Home", {
+                name: req.user.username,
+                user: req.user,
+                presennt: true
+              });
+            }
+          });
     }
-    // if (req.user.pr == null) {
-    //   // for github
-    //   return res.render("Home", { name: req.user.username, user: req.user });
-    // } else {
-    //   res.render("Home", { name: req.user.displayName, user: req.user });
-    // }
-    // if (req.user.displayName == null || req.user.profile === "google") {
-    //   console.log(req.user);
-    //
-    // }
   } else {
     res.redirect("/Login");
   }
@@ -243,12 +251,6 @@ app.post("/Register", function(req, res) {
     .catch(err => {
       console.log(err);
     });
-
-  // create a multer storage
-  const storage = multer.diskStorage({
-    filename: `${Team_name} num  ${Team_Leader} ${Date.now()}`,
-    destination: path.join(__dirname, "./public")
-  });
 
   firestores
     .doc(`/Ennovate2k20/${main_email}`)
@@ -350,7 +352,7 @@ app.post("/upload", function(req, res) {
   } else {
     if (req.session.curruser) {
       file = req.files;
-      // res.json({ user: req.session.curruser, file });
+      res.json({ user: req.session.curruser, file });
     }
   }
   // );
@@ -363,8 +365,23 @@ app.post("/Home", (req, res) => {
       phone_no,
       alternate_phone_no,
       team_members,
-      Team_name
+      Team_name,
+      member1,
+      member2,
+      member3,
+      member4,
+      member5
     } = req.body;
+    let arr;
+    if (((member3 == member4) == member5) === undefined) {
+      arr = { member1, member2 };
+    } else if ((member4 == member5) == undefined) {
+      arr = { member1, member2, member3 };
+    } else if (member5 == undefined) {
+      arr = { member1, member2, member3, member4 };
+    } else {
+      arr = { member1, member2, member3, member4, member5 };
+    }
     firebase
       .firestore()
       .doc(`/admin/${Team_name}`)
@@ -390,22 +407,80 @@ app.post("/Home", (req, res) => {
           .then(final => {
             firebase
               .firestore()
-              .doc(`/github/${req.user.username}`)
-              .update({
+              .doc(`/Ennovate2k20/${req.user.username}`)
+              .set({
                 college_name,
                 phone_no,
                 alternate_phone_no,
-                Team_name
-                // team_members
+                Team_name,
+                arr,
+                method: "github"
               })
               .then(success => {
-                return res.render("Home", {
-                  name: req.user.displayName,
-                  TeamName: Team_name,
-                  presennt: false
-                  // dashboard goes here
-                  // users go here
-                });
+                return res.redirect("/Home");
+              });
+          });
+      });
+  } else {
+    // for google users now
+    const {
+      college_name,
+      phone_no,
+      alternate_phone_no,
+      Team_name,
+      member1,
+      member2,
+      member3,
+      member4,
+      member5
+    } = req.body;
+    let arr;
+    if (((member3 == member4) == member5) === undefined) {
+      arr = { member1, member2 };
+    } else if ((member4 == member5) == undefined) {
+      arr = { member1, member2, member3 };
+    } else if (member5 == undefined) {
+      arr = { member1, member2, member3, member4 };
+    } else {
+      arr = { member1, member2, member3, member4, member5 };
+    }
+    firebase
+      .firestore()
+      .doc(`/admin/${Team_name}`)
+      .get()
+      .then(user => {
+        if (user.exists) {
+          // change doen here
+          return res.status(401).json({
+            msg: "Team is already registered"
+          });
+        }
+        const random = randomstring.generate({
+          length: 15,
+          charset: "alphabetic"
+        });
+        // update the admin first
+        firebase
+          .firestore()
+          .doc(`/admin/${Team_name}`)
+          .set({
+            teamSecret: random,
+            method: req.user.provider
+          })
+          .then(final => {
+            firebase
+              .firestore()
+              .doc(`/Ennovate2k20/${req.user.username}`)
+              .set({
+                college_name,
+                phone_no,
+                alternate_phone_no,
+                Team_name,
+                arr,
+                method: "google"
+              })
+              .then(success => {
+                return res.redirect("/Home");
               });
           });
       });

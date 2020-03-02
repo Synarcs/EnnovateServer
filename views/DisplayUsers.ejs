@@ -110,88 +110,9 @@
                 </div>
               </header>
             </div>
-            <% if (presennt==true && presennt!=undefined) { %>
-              <div class="user-dashboard">
-                  <div class="alert alert-success">
-                      The Team Leader Is  <%= name %>
-                  </div>
-                  <hr><hr>
-                  <div class="container">
-                      <div class="row">
-                        <div class="col-md-6">
-                            <div></div>
-                          </div>
-                        </div>
-                        <div class="col-md-6">
-                          <div class="form-group">
-                            <div class="btn btn-warning btn-block" id="create">
-                              Create A Team
-                            </div>    
-                            <div class="hidden1" style="display: none">
-                                <form action="/Home" method="POST">
-                                  <div class="form-group">
-                                    <label for="team_name">Your Team Name</label>
-                                        <input type="text" class="form-control" placeholder="Team Name" name="Team_name"/>
-                                    <br>
-                                    <label for="college_name" class="form-label">Owner Of Team</label>
-                                      <input type="text" class="text-secondary" disabled value="<%= name %>">
-                                      <input type="text" class="form-control" placeholder="College Name..." name="college_name">
-                                    <label for="phone_no" class="form-label">Phone Numver of The Team Leader</label>
-                                       <input type="text" class="form-control" placeholder="phone_no..." name="phone_no">
-                                    <label for="alternate_phone_no" class="form-label">AlterNate Phone Numver of The Team Leader</label>
-                                      <input type="text" class="form-control" placeholder="alternate_phone_no..." name="alternate_phone_no">
-                                    <label for="team">Enter your Team Now <b>(Minimum 4 member Team max 5)</b></label>
-                                    <br>
-                                    <label for="team" class="form-label">Team Member 1</label>
-
-                                      <input type="text" class="form-control" placeholder="Name of Member 1..." required name="member1">
-                                    <label for="team" class="form-label">Team Member 2</label>
-
-                                      <input type="text" class="form-control" placeholder="Name of Member 2..." required name="member2">
-                                    <label for="team" class="form-label">Team Member 3</label>
-                                      
-
-                                      <input type="text" class="form-control" placeholder="Name of Member 3..."  name="member3">
-                                    <label for="team" class="form-label">Team Member 4</label>
-                                    
-                                      <input type="text" class="form-control" placeholder="Name of Member 4..."  name="member4">
-                                    <label for="team" class="form-label">Team Member 5</label>
-                                    
-                                      <input type="text" class="form-control" placeholder="Name of Member 4..."  name="member4">
-                                      <br><br>
-                                    <button class="btn btn-success btn-block">Create A Team</button>
-                                  </div>
-                                </form>
-                                </div>
-                          </div>
-                        </div>
-                        
-                      </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <% } %>
-        
-
+         
+            <span>Here is your team</span>
       </div>
-
-        <script>
-          const hidden = document.querySelector('.hidden');
-          const hidden1 = document.querySelector('.hidden1');
-          const create = document.getElementById('create');
-          const join = document.getElementById('join');
-
-          create.addEventListener('click',(e)=>{
-            console.log(hidden1);
-            hidden1.style.display = 'block'
-          })
-          join.addEventListener('click',(e)=>{
-            console.log(hidden);
-            hidden.style.display = 'block'
-          })
-
-        </script>
       <!-- Modal -->
       <div id="add_project" class="modal fade" role="dialog">
         <div class="modal-dialog">
