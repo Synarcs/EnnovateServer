@@ -170,16 +170,41 @@ app.get("/Home", (req, res) => {
                   .doc(`/Ennovate2k20/${req.user.username}`)
                   .get()
                   .then(val => {
-                    const {
-                      arr: { member1, member2, member3, member4, member5 }
-                    } = val;
-                    console.log(arr);
-                    if (member3 != "") {
-                      user = member3;
+                    // const {
+                    //   arr: { member1, member2, member3, member4, member5 }
+                    // } = val;
+                    // console.log(arr);
+                    // if (member3 != "") {
+                    // user = member3;
+                    // }
+                    const func = [];
+                    func.push(val.data().arr.member1);
+                    func.push(val.data().arr.member2);
+
+                    if (val.data().arr.member3 != "") {
+                      func.push(val.data().arr.member2);
                     }
+                    let maker = val.data().arr.member4.map(users => {
+                      if (users == "") {
+                        return false;
+                      } else {
+                        return true;
+                      }
+                    });
+                    var count = 0;
+                    for (var i = 0; i < maker.length; ++i) {
+                      if (maker[i] == true) count++;
+                    }
+                    if (count == 2) {
+                      // all present
+                      func.push(member4[0]);
+                      func.push(member4[1]);
+                    }
+                    console.log(func);
                     return res.render("DisplayUsers", {
                       name: req.user.username,
-                      user: req.user
+                      user: req.user,
+                      users: func
                     });
                   });
               } else {
@@ -321,7 +346,9 @@ app.post("/Register", function(req, res) {
 
             const from = "BloomBoxKjsce Team";
             const to = "91" + cnumber;
-            const text = "Hello here your Team secret 😊😊😊" + random;
+            const text =
+              "Hello here your Team secret 😊😊😊 please login with it" +
+              random;
 
             nexmo.message.sendSms(from, to, text);
             res.redirect("/Login");
@@ -378,17 +405,41 @@ app.get("/DashBoard", (req, res) => {
   // if (req.user && req.session.email && req.session.method === "Local") {
 });
 
+let storage = multer.diskStorage({
+  destination: function(req, file, callback) {
+    callback(null, "./uploads");
+  },
+  filename: function(req, file, callback) {
+    console.log(file);
+    callback(
+      null,
+      file.fieldname + "-" + Date.now() + path.extname(file.originalname)
+    );
+  }
+});
 // upload user resume docs to firestore
 app.post("/upload", function(req, res) {
-  let file;
-  if (!req.files) {
-    return res.status(201).render("Dashboards", { err: "file not found" });
-  } else {
-    if (req.session.curruser) {
-      file = req.files;
-      res.json({ user: req.session.curruser, file });
+  let upload = multer({
+    storage: storage,
+    fileFilter: function(req, file, callback) {
+      let ext = path.extname(file.originalname);
+      if (
+        ext !== ".png" &&
+        ext !== ".jpg" &&
+        ext !== ".gif" &&
+        ext !== ".jpeg" &&
+        ext != "docx" &&
+        ext != "doc" &&
+        ext != "pdf"
+      ) {
+        return callback(res.end("Only images are allowed"), null);
+      }
+      callback(null, true);
     }
-  }
+  }).single("userFile");
+  upload(req, res, function(err) {
+    res.send("file is uploaded");
+  });
   // );
 });
 
