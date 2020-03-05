@@ -74,9 +74,7 @@ const addGithubUser = ({ id, username, profileUrl, provider }) => {
       image: profileUrl,
       redirect_page: false
     })
-    .then(msg => {
-      console.log("user is added to github");
-    })
+    .then(msg => {})
     .catch(err => {
       console.log(err);
     });
@@ -142,9 +140,7 @@ const addGoogleUse = ({ id, displayName, name, provider }) => {
       details: name,
       redirect_page: false
     })
-    .then(msg => {
-      console.log("user is added to github");
-    })
+    .then(msg => {})
     .catch(err => {
       console.log(err);
     });
@@ -159,7 +155,7 @@ const addGoogleUse = ({ id, displayName, name, provider }) => {
       redirect_page: false
     })
     .then(msg => {
-      console.log("user is added to github");
+      console.log("user is added to google");
     })
     .catch(err => {
       console.log(err);

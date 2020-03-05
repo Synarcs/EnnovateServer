@@ -84,9 +84,6 @@
                       </button>
                     </div>
                   </nav>
-                  <div class="search hidden-xs hidden-sm">
-                    <input type="text" placeholder="Search" id="search" />
-                  </div>
                 </div>
                 <div class="col-md-5">
                   <div class="header-rightside">
@@ -97,7 +94,6 @@
                           ><i class="fa fa-envelope" aria-hidden="true">
                             </i
                         >
-                        
                              <b>Team-Leader</b>-<%- name %> 
                       </a>
                       </li>
@@ -108,7 +104,6 @@
                 </div>
               </header>
             </div>
-            <% if (presennt==true && presennt!=undefined) { %>
               <div class="user-dashboard">
                   <div class="alert alert-success">
                       The Team Leader Is  <%= name %>
@@ -169,11 +164,7 @@
                 </div>
               </div>
             </div>
-            <% } %>
-        
-
       </div>
-
         <script>
           const hidden = document.querySelector('.hidden');
           const hidden1 = document.querySelector('.hidden1');

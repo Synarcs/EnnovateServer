@@ -10,6 +10,8 @@ module.exports.auth = (req, res, next) => {
       .get()
       .then(data => {
         if (data.exists) {
+          console.log(req.body);
+
           // further scann
           firebase
             .firestore()

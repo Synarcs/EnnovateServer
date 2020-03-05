@@ -121,41 +121,9 @@ app.get("/Home", (req, res) => {
   if (req.user) {
     switch (req.user.provider) {
       case "google":
-        firebase
-          .firestore()
-          .doc(`/Ennovate2k20/${req.user.username}`)
-          .get()
-          .then(data => {
-            if (data.exists) {
-              if (Object.keys(data.data()).length > 5) {
-                // user created a team
-                // to display his team
-                firebase
-                  .firestore()
-                  .doc(`/Ennovate2k20/${req.user.username}`)
-                  .get()
-                  .then(data => {
-                    console.log(data.data());
-                  });
-                return res.render("DisplayUsers", {
-                  name: req.user.displayName,
-                  user: req.user
-                });
-              } else {
-                return res.render("Home", {
-                  name: req.user.displayName,
-                  user: req.user,
-                  presennt: true
-                });
-              }
-            } else {
-              return res.render("Home", {
-                name: req.user.username,
-                user: req.user,
-                presennt: true
-              });
-            }
-          });
+        return res.status(201).render("Google", {
+          name: req.user.displayName
+        });
       default:
         firebase
           .firestore()
@@ -170,13 +138,6 @@ app.get("/Home", (req, res) => {
                   .doc(`/Ennovate2k20/${req.user.username}`)
                   .get()
                   .then(val => {
-                    // const {
-                    //   arr: { member1, member2, member3, member4, member5 }
-                    // } = val;
-                    // console.log(arr);
-                    // if (member3 != "") {
-                    // user = member3;
-                    // }
                     const func = [];
                     func.push(val.data().arr.member1);
                     func.push(val.data().arr.member2);
@@ -184,21 +145,23 @@ app.get("/Home", (req, res) => {
                     if (val.data().arr.member3 != "") {
                       func.push(val.data().arr.member2);
                     }
-                    let maker = val.data().arr.member4.map(users => {
-                      if (users == "") {
-                        return false;
-                      } else {
-                        return true;
+                    if (val.data().arr.member4 !== undefined) {
+                      let maker = val.data().arr.member4.map(users => {
+                        if (users == "") {
+                          return false;
+                        } else {
+                          return true;
+                        }
+                      });
+                      var count = 0;
+                      for (var i = 0; i < maker.length; ++i) {
+                        if (maker[i] == true) count++;
                       }
-                    });
-                    var count = 0;
-                    for (var i = 0; i < maker.length; ++i) {
-                      if (maker[i] == true) count++;
-                    }
-                    if (count == 2) {
-                      // all present
-                      func.push(member4[0]);
-                      func.push(member4[1]);
+                      if (count == 2) {
+                        // all present
+                        func.push(val.data().arr.member4[0]);
+                        func.push(val.data().arr.member4[1]);
+                      }
                     }
                     console.log(func);
                     return res.render("DisplayUsers", {
@@ -208,6 +171,7 @@ app.get("/Home", (req, res) => {
                     });
                   });
               } else {
+                // the team does not exist
                 return res.render("Home", {
                   name: req.user.username,
                   user: req.user,
@@ -271,7 +235,7 @@ app.post("/Register", function(req, res) {
     players_Names
   } = req.body;
   const random = randomstring.generate({
-    length: 15,
+    length: 6,
     charset: "alphabetic"
   });
 
@@ -287,11 +251,10 @@ app.post("/Register", function(req, res) {
         Thank You from BloomBox Team !!
     `
   };
-
   // the teamsecrets for the each team
   firestores
     .doc(`/admin/${Team_name}`)
-    .set({ teamSecret: random })
+    .set({ teamSecret: req.body.passwd })
     .then(msg => {})
     .catch(err => {
       console.log(err);
@@ -314,12 +277,11 @@ app.post("/Register", function(req, res) {
             Alternate_contact: alt_contact,
             Alternate_email: alt_email,
             CollegeName: college_name,
+            password: req.body.passwd,
             // assign the team player in firebase
             Team_Members: users
           })
           .then(addStatus => {
-            console.log("user is added and a email is been send" + addStatus);
-
             // send email now
             const mailgun = require("mailgun-js");
             // configure mailgun first
@@ -346,12 +308,26 @@ app.post("/Register", function(req, res) {
 
             const from = "BloomBoxKjsce Team";
             const to = "91" + cnumber;
+            console.log(to);
             const text =
               "Hello here your Team secret 😊😊😊 please login with it" +
               random;
 
-            nexmo.message.sendSms(from, to, text);
-            res.redirect("/Login");
+            nexmo.message.sendSms(from, to, text, (err, responseData) => {
+              if (err) {
+                console.log(err);
+              } else {
+                if (responseData.messages[0]["status"] === "0") {
+                  console.log("Message sent successfully.");
+                } else {
+                  console.log(
+                    `Message failed with error: ${responseData.messages[0]["error-text"]}`
+                  );
+                }
+              }
+              req.session.key = random;
+              res.redirect("/Login");
+            });
           })
           .catch(err => {
             console.log(err);
@@ -372,6 +348,7 @@ app.get("/Login", function(req, res) {
   } else {
     res.render("Login", {
       openMessage: "custom login",
+      key: req.session.key,
       data: "login here with your team name and secret as password"
     });
   }
@@ -405,51 +382,12 @@ app.get("/DashBoard", (req, res) => {
   // if (req.user && req.session.email && req.session.method === "Local") {
 });
 
-let storage = multer.diskStorage({
-  destination: function(req, file, callback) {
-    callback(null, "./uploads");
-  },
-  filename: function(req, file, callback) {
-    console.log(file);
-    callback(
-      null,
-      file.fieldname + "-" + Date.now() + path.extname(file.originalname)
-    );
-  }
-});
-// upload user resume docs to firestore
-app.post("/upload", function(req, res) {
-  let upload = multer({
-    storage: storage,
-    fileFilter: function(req, file, callback) {
-      let ext = path.extname(file.originalname);
-      if (
-        ext !== ".png" &&
-        ext !== ".jpg" &&
-        ext !== ".gif" &&
-        ext !== ".jpeg" &&
-        ext != "docx" &&
-        ext != "doc" &&
-        ext != "pdf"
-      ) {
-        return callback(res.end("Only images are allowed"), null);
-      }
-      callback(null, true);
-    }
-  }).single("userFile");
-  upload(req, res, function(err) {
-    res.send("file is uploaded");
-  });
-  // );
-});
-
 app.post("/Home", (req, res) => {
   if (req.user.provider == "github") {
     const {
       college_name,
       phone_no,
       alternate_phone_no,
-      team_members,
       Team_name,
       member1,
       member2,
@@ -478,7 +416,7 @@ app.post("/Home", (req, res) => {
           });
         }
         const random = randomstring.generate({
-          length: 15,
+          length: 6,
           charset: "alphabetic"
         });
         // update the admin first
@@ -541,7 +479,7 @@ app.post("/Home", (req, res) => {
           });
         }
         const random = randomstring.generate({
-          length: 15,
+          length: 6,
           charset: "alphabetic"
         });
         // update the admin first
@@ -555,7 +493,7 @@ app.post("/Home", (req, res) => {
           .then(final => {
             firebase
               .firestore()
-              .doc(`/Ennovate2k20/${req.user.username}`)
+              .doc(`/Ennovate2k20/${req.user.displayName}`)
               .set({
                 college_name,
                 phone_no,
@@ -565,11 +503,16 @@ app.post("/Home", (req, res) => {
                 method: "google"
               })
               .then(success => {
+                console.log(11);
                 return res.redirect("/Home");
               });
           });
       });
   }
+});
+
+app.get("/test", (req, res) => {
+  res.render("test.ejs");
 });
 
 // only for user with oauth

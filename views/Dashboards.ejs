@@ -13,11 +13,16 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
     <!------ Include the above in your HEAD tag ---------->
-
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet"
         integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous" />
 
-        
+            <!------ Include the above in your HEAD tag ---------->
+    <script  src="https://www.gstatic.com/firebasejs/7.9.3/firebase-app.js"></script>
+
+    <script  src="https://www.gstatic.com/firebasejs/7.9.3/firebase-auth.js"></script>
+    <script  src="https://www.gstatic.com/firebasejs/7.9.3/firebase-firestore.js"></script>
+    <script  src="https://www.gstatic.com/firebasejs/7.9.3/firebase-storage.js"></script>
     <body class="home">
         <div class="container-fluid display-table">
             <div class="row display-table-row">
@@ -37,10 +42,7 @@
                             </li>
 
 
-                            <li>
-                                <a href="#"><i class="fa fa-calendar" aria-hidden="true"></i><span
-                                        class="hidden-xs hidden-sm">Users</span></a>
-                            </li>
+
                             <li>
                                 <form method="POST" action="/logout">
                                     <i class="fa fa-logout" aria-hidden="true"></i>
@@ -99,10 +101,10 @@
                         <span class="font-weight-bold">This is your DashBoard</span>
                         <div class="row">
                             <div class="col-md-3 list-group">
-                                    <div class="list-group-item">
-                                       <%= user_members[0] %> 
+                                    <div class="list-group-item" class="leader">
+                             <input type="text" class="leader" value="<%- user_members[0]  %>" disabled />
+
                                     </div>
-                                 
                             </div>
                         </div>
                         <br><br>
@@ -111,21 +113,24 @@
                         <!-- upload resume here -->
                             <div class="row">
                                 <div class="col-sm-6 col-md-6 col-lg-6">
-                                    <form role="form" class="form-group" action="/upload" enctype="multipart/form-data" method="POST">
+                                    <form role="form" class="form-group" enctype="multipart/form-data" id="buisness_document" method="POST">
                                         <div class="form-group float-label-control">
                                             <label for="">Team Name</label>
                                             <input type="text" class="form-control" value="Team <%= username  %> " disabled>
                                         </div>
                                         <div class="form-group float-label-control">
                                             <label for="">Upload Your Doc</label>
-                                            <input class="form-control" type="file" name="resume"/>
+                                            <input class="form-control" type="file" name="resume" id="buisness"/>
                                         </div>
                                         <button class="btn btn-warning" type="submit">
                                             Upload Buisness Documents
                                         </button>
                                     </form>
-
                                 </div>
+                            </div>
+                            <div class="progress">
+                                    <label for="progress">Upload Status</label>
+                                    <progress role="progressbar" value="0" max="100" id="progress"></progress>
                             </div>
                             <!-- <div class="col-md-4">
                                 <div class="card">
@@ -166,6 +171,49 @@
    
     </body>
 </body>
+<script>
+        try{
+          var firebaseConfig = {
+              apiKey: "AIzaSyAPdZz1Uz4zh3iIJBc_Av3_Zhpa7imLmCQ",
+              authDomain: "registration-details-a127d.firebaseapp.com",
+              databaseURL: "https://registration-details-a127d.firebaseio.com",
+              projectId: "registration-details-a127d",
+              storageBucket: "registration-details-a127d.appspot.com",
+              messagingSenderId: "274203592486",
+              appId: "1:274203592486:web:7f4afd24615dad2b"
+          };
+            firebase.initializeApp(firebaseConfig);
+            const storage = firebase.storage().ref();
+            const auth = firebase.auth();
+          //   console.log('config done');
+            const buisness_document = document.querySelector('#buisness_document');
+            buisness_document.addEventListener('submit',upload);
+            function upload(e){
+              e.preventDefault();
+                const data = document.getElementById('buisness').files[0];
+                const metaData = {
+                    contentType:'image/jpeg'
+                }
+                let preogrsss = document.querySelector('#progress');
+                const leader = document.querySelector('.leader').value;
+                const ref = storage.child(`${leader}/documents`).put(data);
+                ref.on('state_changed', function(snapshot){
+                      let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                      console.log('Upload is ' + progress + '% done');
+                      preogrsss.value = progress;
+                      }, function(error) {
+                      // Handle unsuccessful uploads
+                      }, function() {
+                      uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+                          console.log('File available at', downloadURL);
+                          alert('thank you for uploading we will get back to you')
+                      });
+                      })
+            }
+          }catch(err){
+            console.log(err);
+        }
+    </script>
 <style>
     /*Main CSS*/
 
