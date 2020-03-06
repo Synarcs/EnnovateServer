@@ -511,16 +511,16 @@ app.post("/Home", (req, res) => {
   }
 });
 
-app.get("/test", (req, res) => {
-  res.render("test.ejs");
-});
+// app.get("/test", (req, res) => {
+//   res.render("test.ejs");
+// });
 
 // only for user with oauth
-app.post("/addMember", (req, res) => {
-  const { team_code } = req.body;
-  if (req.body) {
-  }
-});
+// app.post("/addMember", (req, res) => {
+//   const { team_code } = req.body;
+//   if (req.body) {
+//   }
+// });
 
 app.get("/*", (req, res) => {
   res.redirect("/");

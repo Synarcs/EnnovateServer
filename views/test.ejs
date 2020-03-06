@@ -4,27 +4,78 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Document</title>
+    <title>Login</title>
+    <link rel="stylesheet" href="login.css" />
   </head>
   <body>
-    <script>
-      try {
-        var firebaseConfig = {
-          apiKey: "AIzaSyAPdZz1Uz4zh3iIJBc_Av3_Zhpa7imLmCQ",
-          authDomain: "registration-details-a127d.firebaseapp.com",
-          databaseURL: "https://registration-details-a127d.firebaseio.com",
-          projectId: "registration-details-a127d",
-          storageBucket: "registration-details-a127d.appspot.com",
-          messagingSenderId: "274203592486",
-          appId: "1:274203592486:web:7f4afd24615dad2b"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const storage = firebase.storage();
-        const auth = firebase.auth();
-        console.log("config done");
-      } catch (err) {
-        console.log(err);
+    <p class="tip">Sign In with Team Password</p>
+    <div class="cont">
+      <div class="form sign-in">
+        <h2>Welcome back,</h2>
+        <form action="/Login" method="POST">
+            <label>
+                <span>Email</span>
+                <input type="text" name="Team_name" placeholder="Team Name.."/>
+              </label>
+              <label>
+                <span>Password</span>
+                <input type="password" name="Team_Secret" placeholder="password"/>
+              </label>
+              <button type="submit" class="submit">Sign In</button>
+        </form>
+        <button type="button" class="fb-btn">
+          Connect with <span><a href="/auth/github">Github</a>  </span>
+        </button>
+        <button type="button" class="fb-btn">
+            Connect with <span><a href="/auth/github">Google</a> </span>
+          </button>
+      </div>
+      <style>
+      a{
+        text-decoration: none !important  ;
       }
-    </script>
+      </style>
+      <div class="sub-cont">
+        <div class="img">
+          <div class="img__text m--up">
+            <h2>Login here?</h2>
+            If you already has an account, just sign in. We've missed you!
+          </div>
+          <div class="img__text m--in">
+            <h2>One of us?</h2>
+            <p>
+              If you already has an account, just sign in. We've missed you!
+            </p>
+          </div>
+          <!-- <div class="img__btn">
+            <span class="m--up">Sign Up</span>
+            <span class="m--in">Sign In</span>
+          </div> -->
+        </div>
+       
+        </div>
+      </div>
+    </div>
+
+    <a
+      href="https://dribbble.com/shots/3306190-Login-Registration-form"
+      target="_blank"
+      class="icon-link"
+    >
+      <img
+        src="http://icons.iconarchive.com/icons/uiconstock/socialmedia/256/Dribbble-icon.png"
+      />
+    </a>
+    <a
+      href="https://twitter.com/NikolayTalanov"
+      target="_blank"
+      class="icon-link icon-link--twitter"
+    >
+      <img
+        src="https://cdn1.iconfinder.com/data/icons/logotypes/32/twitter-128.png"
+      />
+    </a>
+
+   
   </body>
 </html>

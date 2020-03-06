@@ -4,139 +4,87 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Login Page</title>
-
-    <!-- Owl-Carousel -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css"
-      integrity="sha256-UhQQ4fxEeABh4JrcmAJ1+16id/1dnlOEVCFOxDef9Lw="
-      crossorigin="anonymous"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css"
-      integrity="sha256-kksNxjDRxd/5+jGurZUJd1sdR2v+ClrCl3svESBaJqw="
-      crossorigin="anonymous"
-    />
-    <!-- Font Awesome CDN -->
-    <script src="https://kit.fontawesome.com/23412c6a8d.js"></script>
-
-    <!-- Custom Style-->
-    <link rel="stylesheet" href="css/Login.css" />
+    <title>Login</title>
+    <link rel="stylesheet" href="login.css" />
   </head>
   <body>
-    <div class="container">
-      <div class="panel">
-        <div class="row">
-          <div class="col liquid">
-            <h4><i class="fas fa-drafting-compass"></i> Ready Co.</h4>
-
-            <!-- Owl-Carousel -->
-            <div class="owl-carousel owl-theme">
-              <img
-                src="assets/undraw_authentication_fsn5.svg"
-                alt=""
-                class="login_img"
-              />
-              <img
-                src="assets/undraw_personal_data_29co.svg"
-                alt=""
-                class="login_img"
-              />
-              <img
-                src="assets/undraw_fingerprint_swrc.svg"
-                alt=""
-                class="login_img"
-              />
-            </div>
-
-            <!-- /Owl-Carousel -->
-
-            <div class="follow">
-              Follow us <i class="fab fa-facebook-f"></i>
-              <i class="fab fa-twitter"></i>
-            </div>
+    <p class="tip">Sign In with Team Password</p>
+    <div class="cont">
+      <div class="form sign-in">
+        <h2>Welcome back,</h2>
+        <form action="/Login" method="POST">
+            <label>
+                <span>Email</span>
+                <input type="text" required name="Team_name" placeholder="Team Name.."/>
+              </label>
+              <label>
+                <span>Password</span>
+                <input type="password" required name="Team_Secret" placeholder="password"/>
+              </label>
+              <button type="submit" class="submit">Sign In</button>
+        </form>
+        <button type="button" class="fb-btn">
+          Connect with <span><a href="/auth/github">Github</a>  </span>
+        </button>
+        <button type="button" class="fb-btn">
+            Connect with <span><a href="/auth/github">Google</a> </span>
+          </button>
+      </div>
+      <style>
+      a{
+        text-decoration: none !important  ;
+      }
+      </style>
+      <div class="sub-cont">
+        <div class="img">
+          <div class="img__text m--up">
+            <h2>Login here?</h2>
+            If you already has an account, just sign in. We've missed you!
           </div>
-          <div class="col login">
-            <button type="button" class="btn btn-signup">
-              <a href="/Register" style="color: wheat;text-decoration: none"
-                >SignUp</a
-              >
-            </button>
-            <form action="/Login" method="POST">
-              <div class="titles">
-                <h6>We keep everything</h6>
-                <h3>Ennovate Login</h3>
-                <span> </span>
-                <span class="">Login with team password</span>
-              </div>
-              <div class="form-group">
-                <input
-                  type="text"
-                  class="form-input"
-                  name="Team_name"
-                  placeholder="Your Team Name.."
-                />
-                <div class="input-icon">
-                  <i class="fas fa-user"></i>
-                </div>
-              </div>
-              <div class="form-group">
-                <input
-                  type="password"
-                  name="Team_Secret"
-                  placeholder="A secret is sent on your team leader contact number"
-                  class="form-input"
-                />
-                <div class="input-icon">
-                  <i class="fas fa-user-lock"></i>
-                </div>
-              </div>
-              <hr />
-              <div class="main">
-                <a href="/auth/google" class="icons">
-                  <i class="fab fa-google-plus"></i>
-                </a>
-                <a href="/auth/github" class="icons">
-                  <i class="fab fa-github"></i>
-                </a>
-                <br /><br /><br /><br />
-              </div>
-              <button type="submit" class="btn btn-login">Login</button>
-            </form>
+          <div class="img__text m--in">
+            <h2>One of us?</h2>
+            <p>
+              If you already has an account, just sign in. We've missed you!
+            </p>
           </div>
+          <!-- <div class="img__btn">
+            <span class="m--up">Sign Up</span>
+            <span class="m--in">Sign In</span>
+          </div> -->
+        </div>
+       
         </div>
       </div>
     </div>
-    <style>
-      .main {
-        height: 20px;
-        display: flex;
-        justify-content: center;
-        flex-direction: row;
-      }
-      .icons {
-        height: 20px;
-      }
-    </style>
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"
-      integrity="sha256-pTxD+DSzIwmwhOqTFN+DB+nHjO4iAsbgfyFq5K5bcE0="
-      crossorigin="anonymous"
-    ></script>
 
-    <script>
-      $(document).ready(function() {
-        $(".owl-carousel").owlCarousel({
-          loop: true,
-          autoplay: true,
-          autoplayTimeout: 2000,
-          autoplayHoverPause: true,
-          items: 1
-        });
-      });
-    </script>
+    <a
+      href="https://dribbble.com/shots/3306190-Login-Registration-form"
+      target="_blank"
+      class="icon-link"
+    >
+      <img
+        src="http://icons.iconarchive.com/icons/uiconstock/socialmedia/256/Dribbble-icon.png"
+      />
+    </a>
+    <a
+      href="https://twitter.com/NikolayTalanov"
+      target="_blank"
+      class="icon-link icon-link--twitter"
+    >
+      <img
+        src="https://cdn1.iconfinder.com/data/icons/logotypes/32/twitter-128.png"
+      />
+    </a>
+
+   
   </body>
+  <script>
+    const input = document.querySelector('input');
+    const form = document.querySelector('form');
+    form.addEventListener('submit',(e)=>{
+     if( input.value.length == 0){
+       alert('the fields are required')
+     }
+    })
+  </script>
 </html>
