@@ -75,9 +75,9 @@
                                                             </i>
                                                             <% if (username) { %>
                                                                <b>Team</b>
-                                                                <div class="font-weight-bold" style="font-weight: 800; color: green;font-size: 20px;">
-                                                                <%= username %>
-                                                            </div>
+                                                                <div class="font-weight-bold" style="font-weight: 800; color: green;font-size: 20px;" >
+                                                                 <%= username %>
+                                                                </div>
                                                             <% } %>
                                                         </a>
                                                 </span>
@@ -95,9 +95,8 @@
                         <span class="font-weight-bold">This is your DashBoard</span>
                         <div class="row">
                             <div class="col-md-3 list-group">
-                                    <div class="list-group-item" class="leader">
-                             <input type="text" class="leader" value="<%- user_members[0]  %>" disabled />
-
+                                    <div class="list-group-item">
+                                 <input type="text" class="leaders" value="<%- user_members[0]  %>" disabled />
                                     </div>
                             </div>
                         </div>
@@ -110,7 +109,7 @@
                                     <form role="form" class="form-group" enctype="multipart/form-data" id="buisness_document" method="POST">
                                         <div class="form-group float-label-control">
                                             <label for="">Team Name</label>
-                                            <input type="text" class="form-control" value="Team <%= username  %> " disabled>
+                                            <input type="text" class="form-control" id="leader" value="Team <%= username  %>" readonly>
                                         </div>
                                         <div class="form-group float-label-control">
                                             <label for="">Upload Your Doc</label>
@@ -122,6 +121,9 @@
                                     </form>
                                 </div>
                             </div>
+                            <div class="lead alert alert-info">
+                                Please Upload in Pdf format
+                            </div>         
                             <div class="progress">
                                     <label for="progress">Upload Status</label>
                                     <progress role="progressbar" value="0" max="100" id="progress"></progress>
@@ -189,8 +191,11 @@
                     contentType:'image/jpeg'
                 }
                 let preogrsss = document.querySelector('#progress');
-                const leader = document.querySelector('.leader').value;
-                const ref = storage.child(`${leader}/documents`).put(data);
+                let leader = document.querySelector('#leader').value;
+                leader = leader.replace("Test",'');
+                const team_member_val = document.querySelector('.leaders').textContent; 
+                console.log(leader);
+                const ref = storage.child(`${leader}/buisness_document`).put(data);
                 ref.on('state_changed', function(snapshot){
                       let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                       console.log('Upload is ' + progress + '% done');
@@ -198,11 +203,11 @@
                       }, function(error) {
                       // Handle unsuccessful uploads
                       }, function() {
-                      uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+                      ref.snapshot.ref.getDownloadURL().then(function(downloadURL) {
                           console.log('File available at', downloadURL);
                           alert('thank you for uploading we will get back to you')
                       });
-                      })
+                    })
             }
           }catch(err){
             console.log(err);
@@ -214,7 +219,7 @@
 
     /*Login Signup Page*/
     hr.style1{
-	border-top: 1px solid #8c8b8b;
+    border-top: 1px solid #8c8b8b;
 }
 
     a:focus,
